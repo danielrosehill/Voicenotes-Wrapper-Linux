@@ -1,14 +1,14 @@
-# Voice Notes Desktop Wrapper
+# Voicenotes Desktop Wrapper
 
-A desktop application wrapper for the Voice Notes web application (voicenotes.com) built with Electron for Ubuntu Linux.
+A desktop application wrapper for the [Voicenotes](https://voicenotes.com) web application built with Electron for Ubuntu Linux.
 
 ## Features
 
-- Access Voice Notes in a dedicated desktop application
+- Access Voicenotes in a dedicated desktop application
 - Persistent authentication between sessions
 - Automatic microphone permissions for voice input
 - Native desktop notifications
-- Confined to the voicenotes.com domain for security
+- Confined to the Voicenotes domain for security
 
 ## Installation
 
@@ -51,9 +51,9 @@ The output files will be in the `dist` directory.
 
 ## Usage
 
-After installation, launch "Voice Notes" from your application menu. The application will open directly to the Voice Notes web interface. Log in with your Voice Notes account credentials, which will be remembered for future sessions.
+After installation, launch "Voicenotes" from your application menu. The application will open directly to the Voicenotes web interface. Log in with your Voicenotes account credentials, which will be remembered for future sessions.
 
-Microphone permissions will be automatically granted for the Voice Notes domain.
+Microphone permissions will be automatically granted for the Voicenotes domain.
 
 ## Troubleshooting
 
