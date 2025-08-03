@@ -440,10 +440,20 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   
   // Detect microphone on page load and notify main process
+  console.log('Voice Notes Wrapper: Starting microphone detection...');
   detectActiveMicrophone().then(micInfo => {
     if (micInfo && window.electronAPI) {
+      console.log('Voice Notes Wrapper: Microphone detected, updating info:', micInfo.label);
       window.electronAPI.updateMicrophoneInfo(micInfo.label || 'Default Microphone');
+    } else {
+      console.log('Voice Notes Wrapper: No microphone detected, creating banner with fallback');
+      // Create banner even without microphone access
+      updateMicrophoneIndicator('No Microphone Access');
     }
+  }).catch(error => {
+    console.log('Voice Notes Wrapper: Error detecting microphone:', error);
+    // Create banner even on error
+    updateMicrophoneIndicator('Microphone Error');
   });
 
   // Monitor for microphone changes

@@ -1,5 +1,7 @@
 # Voicenotes Desktop Wrapper
 
+![alt text](screenshots/1.png)
+
 A desktop application wrapper for the [Voicenotes](https://voicenotes.com) web application built with Electron for Ubuntu Linux.
 
 ## Features
