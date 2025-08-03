@@ -1,0 +1,44 @@
+{
+  "name": "voicenotes-wrapper",
+  "version": "1.0.0",
+  "description": "Desktop wrapper for Voice Notes web application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "voice",
+    "notes",
+    "electron",
+    "wrapper"
+  ],
+  "author": "Daniel Rosehill",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.9.1",
+    "electron-icon-maker": "^0.0.5"
+  },
+  "build": {
+    "appId": "com.danielrosehill.voicenotes-wrapper",
+    "productName": "VoiceNotes",
+    "files": [
+      "**/*",
+      "build/**/*"
+    ],
+    "asarUnpack": [
+      "build/**/*",
+      "audio-monitor.js"
+    ],
+    "linux": {
+      "target": [
+        "deb"
+      ],
+      "category": "Utility",
+      "icon": "build/icon.png",
+      "maintainer": "Daniel Rosehill <daniel@danielrosehill.com>"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "description": "Voice Notes Wrapper - Recording Shortcuts Configuration",
+  "primary_shortcuts": {
+    "record": "F10",
+    "pause": "F11",
+    "stop": "F12"
+  },
+  "shortcuts": {
+    "record": "CommandOrControl+Alt+R",
+    "pause": "CommandOrControl+Alt+P",
+    "stop": "CommandOrControl+Alt+S"
+  },
+  "notes": {
+    "primary_shortcuts": "F10/F11/F12 are the main shortcuts - always active",
+    "record": "Key to start recording (configurable for Bluetooth remotes)",
+    "pause": "Key to pause active recording (configurable for Bluetooth remotes)",
+    "stop": "Key to stop recording (configurable for Bluetooth remotes)",
+    "bluetooth_example": "For Bluetooth remote, map the 'shortcuts' section to the remote's button codes",
+    "custom_keys": "You can use any single key (A-Z, 0-9) or key combinations like 'CommandOrControl+R'",
+    "warning": "Avoid single keys like 'r', 's', 'p' as they interfere with web page typing"
+  },
+  "bluetooth_remote_examples": {
+    "generic_3_button": {
+      "record": "MediaPlayPause",
+      "pause": "MediaStop", 
+      "stop": "MediaNextTrack"
+    },
+    "presentation_remote": {
+      "record": "F5",
+      "pause": "Escape",
+      "stop": "F1"
+    },
+    "custom_usb_device": {
+      "record": "1",
+      "pause": "2",
+      "stop": "3"
+    }
+  }
+}
