@@ -39,3 +39,31 @@ coverage
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# Electron build artifacts
+*.deb
+*.rpm
+*.dmg
+*.exe
+*.msi
+*.AppImage
+*.snap
+*.tar.gz
+*.zip
+
+# Electron builder output
+build/
+release/
+packages/
+
+# Temporary build files
+.tmp/
+temp/
+*.tmp
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
