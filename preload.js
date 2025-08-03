@@ -178,105 +178,195 @@ window.addEventListener('DOMContentLoaded', () => {
     volumeAnalyser = null;
   }
 
-  // Function to create/update microphone indicator in the UI
+  // Function to create/update microphone banner in the UI
   function updateMicrophoneIndicator(micName, volumeLevel = null, isEstimated = false) {
-    // Remove existing indicator if present
-    const existingIndicator = document.getElementById('voice-notes-mic-indicator');
-    if (existingIndicator) {
-      existingIndicator.remove();
+    // Remove existing banner if present
+    const existingBanner = document.getElementById('voice-notes-mic-banner');
+    if (existingBanner) {
+      existingBanner.remove();
     }
 
-    // Create new microphone indicator
-    const indicator = document.createElement('div');
-    indicator.id = 'voice-notes-mic-indicator';
-    indicator.style.cssText = `
+    // Create new microphone banner
+    const banner = document.createElement('div');
+    banner.id = 'voice-notes-mic-banner';
+    banner.style.cssText = `
       position: fixed;
-      top: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.8);
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
       color: white;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 12px;
+      padding: 12px 20px;
+      font-size: 14px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       z-index: 10000;
       pointer-events: auto;
-      opacity: 0.8;
-      transition: opacity 0.3s ease;
-      min-width: 250px;
-      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      border-bottom: 2px solid #3498db;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 60px;
+      transition: all 0.3s ease;
     `;
 
-    let volumeDisplay = '';
-    if (volumeLevel !== null) {
-      const volumePercent = Math.round(volumeLevel * 100);
-      const volumeBar = '█'.repeat(Math.floor(volumePercent / 10)) + '░'.repeat(10 - Math.floor(volumePercent / 10));
-      const prefix = isEstimated ? 'Input Level' : 'System Vol';
-      const suffix = isEstimated ? ' (estimated)' : '';
-      volumeDisplay = `<br><small>${prefix}: ${volumePercent}% [${volumeBar}]${suffix}</small>`;
-    }
+    // Create left section with microphone info
+    const leftSection = document.createElement('div');
+    leftSection.style.cssText = `
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex: 1;
+    `;
 
-    // Function to update the indicator content
-    const updateIndicatorContent = (systemInfo, muteStatus) => {
-      const systemLevelPercent = Math.round(systemInfo.level * 100);
+    // Create microphone info container
+    const micInfo = document.createElement('div');
+    micInfo.style.cssText = `
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    `;
+
+    // Create system audio info container
+    const systemInfo = document.createElement('div');
+    systemInfo.style.cssText = `
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    `;
+
+    // Create mute button
+    const muteButton = document.createElement('button');
+    muteButton.style.cssText = `
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 100px;
+    `;
+    muteButton.textContent = 'Loading...';
+
+    // Add hover effect to mute button
+    muteButton.addEventListener('mouseenter', () => {
+      muteButton.style.transform = 'scale(1.05)';
+      muteButton.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+    });
+    muteButton.addEventListener('mouseleave', () => {
+      muteButton.style.transform = 'scale(1)';
+      muteButton.style.boxShadow = 'none';
+    });
+
+    // Function to update the banner content
+    const updateBannerContent = (systemAudioInfo, muteStatus) => {
+      const systemLevelPercent = Math.round(systemAudioInfo.level * 100);
       const systemLevelBar = '█'.repeat(Math.floor(systemLevelPercent / 10)) + '░'.repeat(10 - Math.floor(systemLevelPercent / 10));
       
-      const muteIcon = muteStatus.isMuted ? '🔇' : '🔊';
-      const muteText = muteStatus.isMuted ? 'MUTED' : 'LIVE';
-      const muteColor = muteStatus.isMuted ? '#ff4444' : '#44ff44';
+      const muteIcon = muteStatus.isMuted ? '🔇' : '🎤';
+      const muteText = muteStatus.isMuted ? 'UNMUTE' : 'MUTE';
+      const muteColor = muteStatus.isMuted ? '#e74c3c' : '#27ae60';
+      const statusText = muteStatus.isMuted ? 'MUTED' : 'LIVE';
+      const statusColor = muteStatus.isMuted ? '#e74c3c' : '#27ae60';
       
-      const systemDisplay = `<br><small>${muteIcon} System: ${systemInfo.name} <span style="color: ${muteColor}; font-weight: bold;">[${muteText}]</span></small><br><small>📊 Level: ${systemLevelPercent}% [${systemLevelBar}]</small><br><small style="color: #aaa;">💡 Click to toggle mute</small>`;
+      // Update microphone info
+      let webVolumeDisplay = '';
+      if (volumeLevel !== null) {
+        const volumePercent = Math.round(volumeLevel * 100);
+        const volumeBar = '█'.repeat(Math.floor(volumePercent / 10)) + '░'.repeat(10 - Math.floor(volumePercent / 10));
+        const prefix = isEstimated ? 'Input Level' : 'Web Level';
+        const suffix = isEstimated ? ' (estimated)' : '';
+        webVolumeDisplay = `<div style="font-size: 12px; color: #bdc3c7;">${prefix}: ${volumePercent}% [${volumeBar}]${suffix}</div>`;
+      }
       
-      indicator.innerHTML = `🎤 Web: ${micName}${volumeDisplay}${systemDisplay}`;
+      micInfo.innerHTML = `
+        <div style="font-weight: bold; color: #3498db;">🎤 Web Microphone</div>
+        <div style="font-size: 13px; color: #ecf0f1;">${micName}</div>
+        ${webVolumeDisplay}
+      `;
+      
+      // Update system info
+      systemInfo.innerHTML = `
+        <div style="font-weight: bold; color: #f39c12;">${muteIcon} System Audio</div>
+        <div style="font-size: 13px; color: #ecf0f1;">${systemAudioInfo.name}</div>
+        <div style="font-size: 12px; color: #bdc3c7;">Level: ${systemLevelPercent}% [${systemLevelBar}]</div>
+        <div style="font-size: 12px; font-weight: bold; color: ${statusColor};">[${statusText}]</div>
+      `;
+      
+      // Update mute button
+      muteButton.textContent = muteText;
+      muteButton.style.background = muteColor;
     };
 
     // Get both system audio info and mute status
     Promise.all([
       window.electronAPI.getSystemAudioInfo(),
       window.electronAPI.getMicrophoneMuteStatus()
-    ]).then(([systemInfo, muteStatus]) => {
-      updateIndicatorContent(systemInfo, muteStatus);
+    ]).then(([systemAudioInfo, muteStatus]) => {
+      updateBannerContent(systemAudioInfo, muteStatus);
     }).catch(() => {
-      indicator.innerHTML = `🎤 Web: ${micName}${volumeDisplay}<br><small style="color: #ff4444;">⚠️ System audio unavailable</small>`;
+      micInfo.innerHTML = `
+        <div style="font-weight: bold; color: #3498db;">🎤 Web Microphone</div>
+        <div style="font-size: 13px; color: #ecf0f1;">${micName}</div>
+      `;
+      systemInfo.innerHTML = `
+        <div style="font-weight: bold; color: #e74c3c;">⚠️ System Audio Unavailable</div>
+        <div style="font-size: 12px; color: #bdc3c7;">Cannot access system microphone controls</div>
+      `;
+      muteButton.textContent = 'N/A';
+      muteButton.disabled = true;
+      muteButton.style.background = '#7f8c8d';
+      muteButton.style.cursor = 'not-allowed';
     });
 
     // Add click handler for mute toggle
-    indicator.addEventListener('click', async () => {
+    muteButton.addEventListener('click', async () => {
+      if (muteButton.disabled) return;
+      
       try {
-        indicator.style.opacity = '0.5';
+        muteButton.disabled = true;
+        muteButton.textContent = 'Working...';
+        muteButton.style.opacity = '0.7';
+        
         const result = await window.electronAPI.toggleMicrophoneMute();
         
         if (result.success) {
           // Refresh the display with new mute status
-          const [systemInfo, muteStatus] = await Promise.all([
+          const [systemAudioInfo, muteStatus] = await Promise.all([
             window.electronAPI.getSystemAudioInfo(),
             window.electronAPI.getMicrophoneMuteStatus()
           ]);
-          updateIndicatorContent(systemInfo, muteStatus);
+          updateBannerContent(systemAudioInfo, muteStatus);
           
-          // Show brief feedback
-          const originalBg = indicator.style.background;
-          indicator.style.background = result.isMuted ? 'rgba(255, 68, 68, 0.8)' : 'rgba(68, 255, 68, 0.8)';
+          // Brief visual feedback
+          banner.style.borderBottomColor = result.isMuted ? '#e74c3c' : '#27ae60';
           setTimeout(() => {
-            indicator.style.background = originalBg;
-          }, 500);
+            banner.style.borderBottomColor = '#3498db';
+          }, 1000);
         }
       } catch (error) {
         console.log('Voice Notes Wrapper: Error toggling mute:', error);
       } finally {
-        indicator.style.opacity = '0.8';
+        muteButton.disabled = false;
+        muteButton.style.opacity = '1';
       }
     });
 
-    document.body.appendChild(indicator);
-
-    // Don't auto-fade if showing volume (keep it visible)
-    if (volumeLevel === null) {
-      setTimeout(() => {
-        if (indicator.parentNode) {
-          indicator.style.opacity = '0.3';
-        }
-      }, 5000);
+    // Assemble the banner
+    leftSection.appendChild(micInfo);
+    leftSection.appendChild(systemInfo);
+    banner.appendChild(leftSection);
+    banner.appendChild(muteButton);
+    
+    // Add banner to page and adjust body padding
+    document.body.appendChild(banner);
+    
+    // Add padding to body to prevent content from being hidden behind banner
+    if (!document.body.style.paddingTop || document.body.style.paddingTop === '0px') {
+      document.body.style.paddingTop = '80px';
     }
   }
 
